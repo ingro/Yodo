@@ -1,0 +1,1 @@
+- spostare validazione ed eventi da `Model` a `Repository` in modo da poter eliminare `Model`?

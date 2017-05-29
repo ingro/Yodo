@@ -1,0 +1,56 @@
+{
+    "name": "Ingruz/Yodo",
+    "type": "library",
+    "description": "Utility library to create a full working CRUD api with Laravel",
+    "keywords": [
+        "Ingruz",
+        "Yodo",
+        "Laravel",
+        "api",
+        "REST",
+        "CRUD"
+    ],
+    "homepage": "https://github.com/ingro/Yodo",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ingro",
+            "email": "ingro85@gmail.com",
+            "homepage": "http://blog.ingruz.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "~5.6|~7.0",
+        "illuminate/support": "~5.1",
+        "league/fractal": "^0.16.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.0",
+        "phpunit/phpunit": "~6.0",
+        "squizlabs/php_codesniffer": "^2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ingruz\\Yodo\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ingruz\\Yodo\\Test\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "check-style": "phpcs -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests",
+        "fix-style": "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
