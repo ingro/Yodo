@@ -1,15 +1,19 @@
 <?php
 
+use Ingruz\Yodo\Test\TestCase;
 use Ingruz\Yodo\Test\TestModel;
+use Ingruz\Yodo\Test\TestRepository;
 
-class ModelTest extends Orchestra\Testbench\TestCase
+class ModelTest extends TestCase
 {
     public function testIsInstantiable()
     {
-        $data = ['foo' => 'bar'];
-
         $item = new TestModel();
 
-        $this->assertEquals($data['foo'], 'bar');
+        $repository = new TestRepository($item);
+
+        $res = $repository->getAll();
+
+        $this->assertCount(1, $res);
     }
 }

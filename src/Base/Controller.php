@@ -119,7 +119,7 @@ class Controller extends BaseController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Api\Model $item
+     * @param  \Illuminate\Database\Eloquent\Model $item
      * @return \Illuminate\Http\Response
      */
     public function show($item)
@@ -133,7 +133,7 @@ class Controller extends BaseController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  \App\Api\Model $item
+     * @param  \Illuminate\Database\Eloquent\Model $item
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $item)
@@ -151,7 +151,7 @@ class Controller extends BaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Api\Model $item
+     * @param  \Illuminate\Database\Eloquent\Model $item
      * @return \Illuminate\Http\Response
      */
     public function destroy($item)
@@ -165,10 +165,10 @@ class Controller extends BaseController
     }
 
     /**
-     * @param \App\Api\Model $item
+     * @param \Illuminate\Database\Eloquent\Model $item
      * @return array
      */
-    protected function serializeItem(Model $item)
+    protected function serializeItem($item)
     {
         $this->fractal->setSerializer(new ArraySerializer());
         $resource = new Item($item, new $this->transformerClass);
