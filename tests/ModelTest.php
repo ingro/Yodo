@@ -14,6 +14,10 @@ class ModelTest extends TestCase
 
         $res = $repository->getAll();
 
-        $this->assertCount(1, $res);
+        $this->assertCount(50, $res);
+
+        $response = $this->json('GET', '/api/posts?limit=5');
+
+        dump($response->getContent());
     }
 }

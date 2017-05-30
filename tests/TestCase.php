@@ -1,6 +1,7 @@
 <?php namespace Ingruz\Yodo\Test;
 
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase
@@ -15,6 +16,8 @@ class TestCase extends OrchestraTestCase
         $this->withFactories(__DIR__.'/factories');
 
         $this->setUpDatabase($this->app);
+
+        $this->setUpRoutes();
     }
 
     /**
@@ -25,6 +28,8 @@ class TestCase extends OrchestraTestCase
      */
     protected function getEnvironmentSetUp($app)
     {
+        $app['config']->set('app.debug', true);
+
         $app['config']->set('database.default', 'sqlite');
         $app['config']->set('database.connections.sqlite', [
             'driver' => 'sqlite',
@@ -42,6 +47,14 @@ class TestCase extends OrchestraTestCase
             $table->timestamps();
         });
 
-        factory(TestModel::class)->create();
+        for($i = 0; $i < 100; $i++)
+        {
+            factory(TestModel::class)->create();
+        }
+    }
+
+    protected function setUpRoutes()
+    {
+        Route::resource('api/posts', TestController::class);
     }
 }
