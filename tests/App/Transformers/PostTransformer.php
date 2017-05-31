@@ -1,10 +1,11 @@
-<?php namespace Ingruz\Yodo\Test;
+<?php namespace App\Transformers;
 
+use App\Post;
 use League\Fractal\TransformerAbstract;
 
-class TestTransformer extends TransformerAbstract
+class PostTransformer extends TransformerAbstract
 {
-    public function transform(TestModel $item)
+    public function transform(Post $item)
     {
         return [
             'id' => $item->id,

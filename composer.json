@@ -37,7 +37,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Ingruz\\Yodo\\Test\\": "tests"
+            "Ingruz\\Yodo\\Test\\": "tests",
+            "App\\": "tests/App"
         }
     },
     "scripts": {

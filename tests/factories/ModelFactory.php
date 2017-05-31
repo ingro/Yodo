@@ -1,6 +1,6 @@
 <?php
 
-use Ingruz\Yodo\Test\TestModel;
+use App\Post;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,7 +13,7 @@ use Ingruz\Yodo\Test\TestModel;
 |
 */
 
-$factory->define(TestModel::class, function (Faker\Generator $faker) {
+$factory->define(Post::class, function (Faker\Generator $faker) {
     return [
         'title' => $faker->sentence,
         'content' => $faker->text

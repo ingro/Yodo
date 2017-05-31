@@ -1,5 +1,7 @@
 <?php namespace Ingruz\Yodo\Test;
 
+use App\Http\Controllers\PostController;
+use App\Post;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
@@ -49,12 +51,12 @@ class TestCase extends OrchestraTestCase
 
         for($i = 0; $i < 100; $i++)
         {
-            factory(TestModel::class)->create();
+            factory(Post::class)->create();
         }
     }
 
     protected function setUpRoutes()
     {
-        Route::resource('api/posts', TestController::class);
+        Route::resource('api/posts', PostController::class);
     }
 }

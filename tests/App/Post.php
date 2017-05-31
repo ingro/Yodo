@@ -1,10 +1,8 @@
-<?php
-
-namespace Ingruz\Yodo\Test;
+<?php namespace App;
 
 use Ingruz\Yodo\Base\Model;
 
-class TestModel extends Model
+class Post extends Model
 {
     protected $table = 'posts';
 
