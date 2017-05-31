@@ -4,7 +4,7 @@ class ControllerTest extends TestCase
 {
     public function testIndexRoute()
     {
-        $response = $this->json('GET', '/api/posts?limit=5');
+        $response = $this->json('GET', 'posts?limit=5');
 
 //        dump($response->dump());
 
@@ -40,4 +40,13 @@ class ControllerTest extends TestCase
         $this->assertEquals(1, $json['meta']['pagination']['current_page']);
         $this->assertEquals(20, $json['meta']['pagination']['total_pages']);
     }
+
+    /*public function testShowRoute()
+    {
+        $response = $this->json('GET', 'posts/999');
+
+        dump($response->dump());
+
+        $response->assertStatus(404);
+    }*/
 }

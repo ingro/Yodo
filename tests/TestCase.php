@@ -1,8 +1,8 @@
 <?php namespace Ingruz\Yodo\Test;
 
 use App\Comment;
-use App\Http\Controllers\PostController;
 use App\Post;
+use App\Http\Controllers\PostController;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
@@ -39,6 +39,8 @@ class TestCase extends OrchestraTestCase
             'database' => ':memory:',
             'prefix' => '',
         ]);
+
+        Route::model('post', Post::class);
     }
 
     protected function setUpDatabase($app)
@@ -73,6 +75,10 @@ class TestCase extends OrchestraTestCase
 
     protected function setUpRoutes()
     {
-        Route::resource('api/posts', PostController::class);
+        // Route::model('post', Post::class);
+        Route::resource('posts', PostController::class);
+        // Route::get('posts', '\App\Http\Controllers\PostController@index');
+        // Route::get('posts/{post}', '\App\Http\Controllers\PostController@show');
+
     }
 }
