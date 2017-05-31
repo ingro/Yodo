@@ -16,8 +16,8 @@ class RepositoryTest extends TestCase
 
         $this->assertCount(50, $res);
 
-//        $response = $this->json('GET', '/api/posts?limit=5');
-//
-//        dump($response->getContent());
+        $response = $this->json('GET', '/api/posts?limit=5');
+
+        dump($response->getContent());
     }
 }

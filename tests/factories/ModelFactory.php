@@ -1,6 +1,7 @@
 <?php
 
 use App\Post;
+use App\Comment;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,13 @@ use App\Post;
 $factory->define(Post::class, function (Faker\Generator $faker) {
     return [
         'title' => $faker->sentence,
+        'content' => $faker->text
+    ];
+});
+
+$factory->define(Comment::class, function (Faker\Generator $faker) {
+    return [
+        'username' => $faker->userName,
         'content' => $faker->text
     ];
 });

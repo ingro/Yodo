@@ -1,5 +1,6 @@
 <?php namespace Ingruz\Yodo\Test;
 
+use App\Comment;
 use App\Http\Controllers\PostController;
 use App\Post;
 use Illuminate\Database\Schema\Blueprint;
@@ -49,9 +50,24 @@ class TestCase extends OrchestraTestCase
             $table->timestamps();
         });
 
-        for($i = 0; $i < 100; $i++)
-        {
+        $app['db']->connection()->getSchemaBuilder()->create('comments', function(Blueprint $table) {
+            $table->increments('id');
+            $table->integer('post_id')->unsigned();
+            $table->string('username');
+            $table->text('content');
+            $table->timestamps();
+
+            $table->foreign('post_id')->references('id')->on('post');
+        });
+
+        for($i = 0; $i < 100; $i++) {
             factory(Post::class)->create();
+        }
+
+        for($i = 0; $i<200; $i++) {
+            factory(Comment::class)->create([
+                'post_id' => rand(1, 100)
+            ]);
         }
     }
 
