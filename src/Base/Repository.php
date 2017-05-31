@@ -2,9 +2,12 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Ingruz\Yodo\Exceptions\ApiLimitNotSetException;
+use Ingruz\Yodo\Traits\ClassNameInspectorTrait;
 
 class Repository
 {
+    use ClassNameInspectorTrait;
+
     /**
      * @var Model
      */
@@ -61,9 +64,9 @@ class Repository
      */
     protected function getModelClass()
     {
-        $ns = explode('\\', get_called_class());
-        $domain = reset($ns);
-        $name = str_replace('Repository', '', end($ns));
+        $ns = $this->getClassNameParts();
+        $domain = $this->getRootNamespace($ns);
+        $name = $this->getRelatedClassName('Repository', '', $ns);
 
         return $domain . '\\' . $name;
     }

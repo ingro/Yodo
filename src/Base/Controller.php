@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 use Ingruz\Yodo\Defaults\TransformerDefault;
+use Ingruz\Yodo\Traits\ClassNameInspectorTrait;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Item;
@@ -17,7 +18,7 @@ use League\Fractal\Serializer\ArraySerializer;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests, ClassNameInspectorTrait;
 
     /**
      * @var Manager
@@ -68,9 +69,9 @@ class Controller extends BaseController
      */
     protected function getRepositoryClass()
     {
-        $ns = explode('\\', get_called_class());
-        $domain = reset($ns);
-        $name = str_replace('Controller', 'Repository', end($ns));
+        $ns = $this->getClassNameParts();
+        $domain = $this->getRootNamespace($ns);
+        $name = $this->getRelatedClassName('Controller', 'Repository', $ns);
 
         return $domain . '\\Repositories\\' . $name;
     }
@@ -80,9 +81,9 @@ class Controller extends BaseController
      */
     protected function getTransformerClass()
     {
-        $ns = explode('\\', get_called_class());
-        $domain = reset($ns);
-        $name = str_replace('Controller', 'Transformer', end($ns));
+        $ns = $this->getClassNameParts();
+        $domain = $this->getRootNamespace($ns);
+        $name = $this->getRelatedClassName('Controller', 'Transformer', $ns);
 
         $result = $domain . '\\Transformers\\' . $name;
 
@@ -99,9 +100,9 @@ class Controller extends BaseController
      */
     protected function getModelClass()
     {
-        $ns = explode('\\', get_called_class());
-        $domain = reset($ns);
-        $name = str_replace('Controller', '', end($ns));
+        $ns = $this->getClassNameParts();
+        $domain = $this->getRootNamespace($ns);
+        $name = $this->getRelatedClassName('Controller', '', $ns);
 
         return $domain . '\\' . $name;
     }
