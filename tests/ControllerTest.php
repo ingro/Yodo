@@ -1,7 +1,18 @@
 <?php namespace Ingruz\Yodo\Test;
 
+use App\Post;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 class ControllerTest extends TestCase
 {
+    protected $itemJsonStructure = [
+        'id',
+        'title',
+        'content',
+        'comments_number',
+        'comments'
+    ];
+
     public function testIndexRoute()
     {
         $response = $this->json('GET', 'posts?limit=5');
@@ -11,13 +22,7 @@ class ControllerTest extends TestCase
         $response->assertSuccessful();
         $response->assertJsonStructure([
             'data' => [
-                '*' => [
-                    'id',
-                    'title',
-                    'content',
-                    'comments_number',
-                    'comments'
-                ]
+                '*' => $this->itemJsonStructure
             ],
             'meta' => [
                 'pagination' => [
@@ -43,10 +48,74 @@ class ControllerTest extends TestCase
 
     public function testShowRoute()
     {
-        $response = $this->json('GET', 'posts/999');
+        $response  = $this->json('GET', 'posts/37');
+
+        $response->assertSuccessful();
+        $response->assertJsonStructure($this->itemJsonStructure);
+
+        $json = $response->decodeResponseJson();
+
+        $this->assertEquals(37, $json['id']);
+
+        $responseNotFound = $this->json('GET', 'posts/999');
 
         // dump($response->dump());
 
-        $response->assertStatus(404);
+        $responseNotFound->assertStatus(404);
+    }
+
+    public function testStoreRoute()
+    {
+        $title = 'My shiny new post';
+
+        $response = $this->json('POST', 'posts', [
+            'title' => $title,
+            'content' => 'Ipsum Lorem'
+        ]);
+
+        $response->assertSuccessful();
+        $response->assertJsonStructure($this->itemJsonStructure);
+
+        $json = $response->decodeResponseJson();
+
+        $this->assertEquals(101, $json['id']);
+        $this->assertEquals($title, $json['title']);
+
+        $post = Post::findOrFail(101);
+
+        $this->assertEquals($title, $post->title);
+    }
+
+    public function testUpdateRoute()
+    {
+        $title = 'This is way better';
+
+        $response = $this->json('PATCH', 'posts/45', [
+            'title' => $title
+        ]);
+
+        $response->assertSuccessful();
+        $response->assertJsonStructure($this->itemJsonStructure);
+
+        $json = $response->decodeResponseJson();
+
+        $this->assertEquals(45, $json['id']);
+        $this->assertEquals($title, $json['title']);
+
+        $post = Post::findOrFail(45);
+
+        $this->assertEquals($title, $post->title);
+    }
+
+    public function testDeleteRoute()
+    {
+        $response = $this->json('DELETE', 'posts/12');
+
+        $response->assertSuccessful();
+        $response->assertExactJson(['result' => 'ok']);
+
+        $this->expectException(ModelNotFoundException::class);
+
+        Post::findOrFail(12);
     }
 }
