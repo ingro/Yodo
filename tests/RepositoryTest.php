@@ -2,6 +2,7 @@
 
 use App\Post;
 use App\Repositories\PostRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Ingruz\Yodo\Test\TestCase;
 
 class RepositoryTest extends TestCase
@@ -34,6 +35,13 @@ class RepositoryTest extends TestCase
         $this->assertInstanceOf(Post::class, $res);
 
         $this->assertEquals(5, $res->id);
+    }
+
+    public function testGetByIdNotFound()
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $this->repository->getById(999);
     }
 
     public function testCreate()
@@ -81,7 +89,7 @@ class RepositoryTest extends TestCase
 
         $this->assertTrue($res);
 
-        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        $this->expectException(ModelNotFoundException::class);
 
         Post::findOrFail(57);
     }
