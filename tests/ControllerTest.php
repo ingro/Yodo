@@ -41,12 +41,12 @@ class ControllerTest extends TestCase
         $this->assertEquals(20, $json['meta']['pagination']['total_pages']);
     }
 
-    /*public function testShowRoute()
+    public function testShowRoute()
     {
         $response = $this->json('GET', 'posts/999');
 
-        dump($response->dump());
+        // dump($response->dump());
 
         $response->assertStatus(404);
-    }*/
+    }
 }

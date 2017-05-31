@@ -119,11 +119,15 @@ class Controller extends BaseController
     /**
      * Display the specified resource.
      *
-     * @param  \Illuminate\Database\Eloquent\Model $item
+     * @param  \Illuminate\Database\Eloquent\Model|string $item
      * @return \Illuminate\Http\Response
      */
     public function show($item)
     {
+        if (is_string($item)) {
+            $item = $this->repository->getById($item);
+        }
+
         $data = $this->buildShowData($item);
 
         return response()->json($data);
