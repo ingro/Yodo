@@ -16,7 +16,7 @@ class RepositoryTest extends TestCase
     {
         parent::setUp();
 
-        $this->repository = new PostRepository(new Post);
+        $this->repository = new PostRepository();
     }
 
     public function testSimpleGetAll()

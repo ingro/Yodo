@@ -40,7 +40,7 @@ class TestCase extends OrchestraTestCase
             'prefix' => '',
         ]);
 
-        Route::model('post', Post::class);
+        // Route::model('post', Post::class);
     }
 
     protected function setUpDatabase($app)
@@ -75,10 +75,8 @@ class TestCase extends OrchestraTestCase
 
     protected function setUpRoutes()
     {
-        // Route::model('post', Post::class);
-        Route::resource('posts', PostController::class);
-        // Route::get('posts', '\App\Http\Controllers\PostController@index');
-        // Route::get('posts/{post}', '\App\Http\Controllers\PostController@show');
-
+        Route::group(['middleware' => 'bindings'], function() {
+            Route::resource('posts', PostController::class);
+        });
     }
 }

@@ -17,8 +17,6 @@ class ControllerTest extends TestCase
     {
         $response = $this->json('GET', 'posts?limit=5');
 
-//        dump($response->dump());
-
         $response->assertSuccessful();
         $response->assertJsonStructure([
             'data' => [
@@ -58,8 +56,6 @@ class ControllerTest extends TestCase
         $this->assertEquals(37, $json['id']);
 
         $responseNotFound = $this->json('GET', 'posts/999');
-
-        // dump($response->dump());
 
         $responseNotFound->assertStatus(404);
     }

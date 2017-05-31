@@ -1,1 +1,2 @@
 - spostare validazione ed eventi da `Model` a `Repository` in modo da poter eliminare `Model`?
+- permette di filtrare per campi relativi a relazioni;

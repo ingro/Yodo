@@ -7,6 +7,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
+use Ingruz\Yodo\Defaults\TransformerDefault;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Item;
@@ -34,21 +35,75 @@ class Controller extends BaseController
     protected $transformerClass;
 
     /**
-     * @var Model
+     * Controller constructor.
      */
-    protected $model;
-
-    /**
-     * ApiController constructor.
-     * @param Repository $repository
-     * @param Model $model
-     */
-    public function __construct(Repository $repository, Model $model)
+    public function __construct()
     {
         $this->fractal = new Manager();
-        $this->model = $model;
 
-        $this->repository = new $repository(new $model);
+        $this->repository = $this->getRepository();
+        $this->transformerClass = $this->getTransformerClass();
+    }
+
+    /**
+     * @return Repository
+     */
+    protected function getRepository()
+    {
+        // Try to get repository's classname
+        $className = $this->getRepositoryClass();
+
+        if (class_exists($className)) {
+            return app($className);
+        }
+
+        // It that doesn't exist use a default one by passing the right model's classname to the base repository
+        $modelClass = $this->getModelClass();
+
+        return new Repository(app($modelClass));
+    }
+
+    /**
+     * @return string
+     */
+    protected function getRepositoryClass()
+    {
+        $ns = explode('\\', get_called_class());
+        $domain = reset($ns);
+        $name = str_replace('Controller', 'Repository', end($ns));
+
+        return $domain . '\\Repositories\\' . $name;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getTransformerClass()
+    {
+        $ns = explode('\\', get_called_class());
+        $domain = reset($ns);
+        $name = str_replace('Controller', 'Transformer', end($ns));
+
+        $result = $domain . '\\Transformers\\' . $name;
+
+        if (class_exists($result)) {
+            return $result;
+        }
+
+        // If the class doen't exists return a default transformer
+        return TransformerDefault::class;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getModelClass()
+    {
+        $ns = explode('\\', get_called_class());
+        $domain = reset($ns);
+        $name = str_replace('Controller', '', end($ns));
+
+        return $domain . '\\' . $name;
     }
 
     /**

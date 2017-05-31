@@ -1,5 +1,6 @@
 <?php namespace Ingruz\Yodo\Base;
 
+use Illuminate\Database\Eloquent\Model;
 use Ingruz\Yodo\Exceptions\ApiLimitNotSetException;
 
 class Repository
@@ -40,6 +41,32 @@ class Repository
      * @var array
      */
     static $orderParams = [];
+
+    /**
+     * Repository constructor.
+     * @param Model|null $model
+     */
+    public function __construct(Model $model = null)
+    {
+        // If a model is passed as argument use that, otherwise try to build one from repository's classname
+        if ($model) {
+            $this->model = $model;
+        } else {
+            $this->model = app($this->getModelClass());
+        }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getModelClass()
+    {
+        $ns = explode('\\', get_called_class());
+        $domain = reset($ns);
+        $name = str_replace('Repository', '', end($ns));
+
+        return $domain . '\\' . $name;
+    }
 
     /**
      * @param array $params
@@ -94,7 +121,7 @@ class Repository
      * Create a new item
      *
      * @param  array $data
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return Model
      */
     public function create(array $data)
     {
