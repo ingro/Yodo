@@ -8,6 +8,12 @@ class Post extends Model
 
     protected $fillable = ['title', 'content'];
 
+    static $rules = [
+        'save' => [
+            'title' => 'required'
+        ]
+    ];
+
     public function comments()
     {
         return $this->hasMany(Comment::class, 'post_id');

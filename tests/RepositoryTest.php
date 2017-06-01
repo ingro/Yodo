@@ -1,9 +1,8 @@
-<?php
+<?php namespace Ingruz\Yodo\Test;
 
 use App\Post;
 use App\Repositories\PostRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Ingruz\Yodo\Test\TestCase;
 
 class RepositoryTest extends TestCase
 {
