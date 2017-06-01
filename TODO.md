@@ -1,4 +1,2 @@
 - spostare validazione ed eventi da `Model` a `Repository` in modo da poter eliminare `Model`?
 - permette di filtrare per campi relativi a relazioni;
-- $queryParams -> $queryParamsHandlers (e relativo getter)
-- $orderParams -> $orderParamsHandlers (e relativo getter)

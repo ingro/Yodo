@@ -38,12 +38,12 @@ class Repository
     /**
      * @var array
      */
-    static $queryParams = [];
+    static $queryParamsHandlers = [];
 
     /**
      * @var array
      */
-    static $orderParams = [];
+    static $orderParamsHandlers = [];
 
     /**
      * Repository constructor.
@@ -100,15 +100,15 @@ class Repository
      * @param array $requestParams
      * @return array
      */
-    public function getQueryParams($requestParams) {
-        return static::$queryParams;
+    public function getQueryParamsHandlers($requestParams) {
+        return static::$queryParamsHandlers;
     }
 
     /**
      * @return array
      */
-    public function getOrderParams() {
-        return static::$orderParams;
+    public function getOrderParamsHandlers() {
+        return static::$orderParamsHandlers;
     }
 
     /**
@@ -190,7 +190,7 @@ class Repository
         $query = $this->model->with($this->getEagerAssociations());
 
         // Ottengo i parametri dei filtri impostati per il repository
-        $queryParams = $this->getQueryParams($params);
+        $queryParams = $this->getQueryParamsHandlers($params);
 
         // Li ciclo...
         foreach ($queryParams as $queryParam => $dbAttr)
@@ -246,7 +246,7 @@ class Repository
             // Determino prima la direzione
             $orderDir = isset($params['orderDir']) ? $params['orderDir'] : 'asc';
 
-            $orderParams = $this->getOrderParams();
+            $orderParams = $this->getOrderParamsHandlers();
 
             // Se è impostata la chiave nell'array $orderParams...
             if (isset($orderParams[$params['orderBy']]))
