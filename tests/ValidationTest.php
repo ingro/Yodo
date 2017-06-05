@@ -21,6 +21,8 @@ class ValidationTest extends TestCase
     {
         $this->expectException(ModelValidationException::class);
 
+        $this->expectExceptionMessage(json_encode(['title' => ['The title field is required.']]));
+
         $this->repository->create([
             'content' => 'foo bar'
         ]);

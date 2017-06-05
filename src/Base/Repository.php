@@ -1,7 +1,9 @@
 <?php namespace Ingruz\Yodo\Base;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Validator;
 use Ingruz\Yodo\Exceptions\ApiLimitNotSetException;
+use Ingruz\Yodo\Exceptions\ModelValidationException;
 use Ingruz\Yodo\Traits\ClassNameInspectorTrait;
 
 class Repository
@@ -44,6 +46,15 @@ class Repository
      * @var array
      */
     static $orderParamsHandlers = [];
+
+    /**
+     * @var array
+     */
+    static $rules = [
+        'save' => [],
+        'create' => [],
+        'update' => []
+    ];
 
     /**
      * Repository constructor.
@@ -128,6 +139,8 @@ class Repository
      */
     public function create(array $data)
     {
+        $this->validate('create', $data);
+
         return $this->model->create($data);
     }
 
@@ -138,6 +151,8 @@ class Repository
      */
     public function update($item, $data)
     {
+        $this->validate('update', $data);
+
         if ($item instanceof Model)
         {
             $instance = $item;
@@ -293,5 +308,69 @@ class Repository
     public function getEagerAssociations()
     {
         return static::$eagerAssociations;
+    }
+
+    /**
+     * @param $op
+     * @param $data
+     * @return bool
+     * @throws ModelValidationException
+     */
+    protected function validate($op, $data)
+    {
+        $rules = $this->getValidationRules($op);
+
+        if (empty($rules))
+        {
+            return true;
+        }
+
+        $validator = Validator::make($data, $rules);
+        $result = $validator->passes();
+
+        if (!$result)
+        {
+            throw new ModelValidationException($validator->messages());
+        }
+
+        return true;
+    }
+
+    /**
+     * Return a single array with the rules for the action required
+     *
+     * @param string $op
+     * @return array
+     */
+    public function getValidationRules($op)
+    {
+        $rules = static::$rules;
+        $output = [];
+
+        if (empty ($rules))
+        {
+            return $output;
+        }
+
+        if ($op === 'update')
+        {
+            $merged = (isset($rules['update'])) ? array_merge_recursive($rules['save'], $rules['update']) : $rules['save'];
+        } else
+        {
+            $merged = (isset($rules['create'])) ? array_merge_recursive($rules['save'], $rules['create']) : $rules['save'];
+        }
+
+        foreach ($merged as $field => $rules)
+        {
+            if (is_array($rules))
+            {
+                $output[$field] = implode("|", $rules);
+            } else
+            {
+                $output[$field] = $rules;
+            }
+        }
+
+        return $output;
     }
 }
