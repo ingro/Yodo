@@ -336,9 +336,8 @@ class Repository
         }
 
         $validator = Validator::make($data, $rules);
-        $result = $validator->passes();
 
-        if (!$result)
+        if (! $validator->passes())
         {
             throw new ModelValidationException($validator->messages());
         }
