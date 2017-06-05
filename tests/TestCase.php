@@ -49,6 +49,7 @@ class TestCase extends OrchestraTestCase
             $table->increments('id');
             $table->string('title');
             $table->text('content');
+            $table->string('author')->nullable();
             $table->timestamps();
         });
 

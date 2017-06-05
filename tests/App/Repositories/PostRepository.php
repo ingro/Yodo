@@ -1,5 +1,6 @@
 <?php namespace App\Repositories;
 
+use App\PostWithEvents;
 use Ingruz\Yodo\Base\Repository;
 
 class PostRepository extends Repository
@@ -13,4 +14,11 @@ class PostRepository extends Repository
         'create' => [],
         'update' => []
     ];
+
+    public function boot()
+    {
+        PostWithEvents::saving(function($model) {
+            $model->author = 'John Doe';
+        });
+    }
 }

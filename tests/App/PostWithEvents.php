@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class PostWithEvents extends Model
 {
     protected $table = 'posts';
 

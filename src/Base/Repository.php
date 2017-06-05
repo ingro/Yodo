@@ -68,6 +68,16 @@ class Repository
         } else {
             $this->model = app($this->getModelClass());
         }
+
+        $this->boot();
+    }
+
+    /**
+     *
+     */
+    public function boot()
+    {
+        //
     }
 
     /**
