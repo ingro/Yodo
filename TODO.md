@@ -1,3 +1,4 @@
-- permette di filtrare per campi relativi a relazioni;
-- testare varie combinazioni di validazione (save, create e update) in modo da poter poi refactorare la parte di merge delle regole all'interno di `Repository`
-- possibilita di passare stringhe nel formato `ModelClass::class` al construttore di `Repository` oltre che ad una istanza del modello (stessa cosa anche per `Controller`?)
+- allow to filter for fields relative to relations;
+- write more tests, especially to test how validation works to refactor those function inside `Repository`
+- allow to pass strings as `Model::class` to `Repository`'s constructor as alterantive to pass a instance of the model
+- write some basic docs

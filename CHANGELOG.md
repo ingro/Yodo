@@ -1,22 +1,22 @@
 # Changelog
 
-All Notable changes to `:package_name` will be documented in this file.
+All Notable changes to `yodo` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## NEXT - YYYY-MM-DD
+## 0.1.0 - 2017-06-07
 
 ### Added
-- Nothing
+- First release
 
 ### Deprecated
-- Nothing
+- First release
 
 ### Fixed
-- Nothing
+- First release
 
 ### Removed
-- Nothing
+- First release
 
 ### Security
-- Nothing
+- First release
