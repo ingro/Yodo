@@ -1,5 +1,5 @@
 {
-    "name": "Ingruz/Yodo",
+    "name": "ingruz/yodo",
     "type": "library",
     "description": "Utility library to create a full working CRUD api with Laravel",
     "keywords": [
