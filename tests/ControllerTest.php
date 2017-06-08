@@ -103,6 +103,16 @@ class ControllerTest extends TestCase
         $this->assertEquals($title, $post->title);
     }
 
+    public function testFailedUpdateRoute()
+    {
+        // Fails validation
+        $response = $this->json('PATCH', 'posts/45', [
+            'content' => 'Some content'
+        ]);
+
+        $response->assertStatus(500);
+    }
+
     public function testDeleteRoute()
     {
         $response = $this->json('DELETE', 'posts/12');

@@ -1,4 +1,5 @@
 - allow to filter for fields relative to relations;
 - write more tests, especially to test how validation works to refactor those function inside `Repository`
 - allow to pass strings as `Model::class` to `Repository`'s constructor as alterantive to pass a instance of the model
+- handle `ModelValidationException` automatically with a `412` response?
 - write some basic docs

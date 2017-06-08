@@ -1,6 +1,5 @@
 <?php namespace Ingruz\Yodo\Test;
 
-use App\PostWithEvents;
 use App\Repositories\PostRepository;
 use Ingruz\Yodo\Exceptions\ModelValidationException;
 
@@ -27,17 +26,5 @@ class ValidationTest extends TestCase
         $this->repository->create([
             'content' => 'foo bar'
         ]);
-    }
-
-    public function testEvents()
-    {
-        $repository = new PostRepository(new PostWithEvents());
-
-        $res = $repository->create([
-            'title' => 'My first post with events',
-            'content' => 'foo bar'
-        ]);
-
-        $this->assertEquals('John Doe', $res->author);
     }
 }
