@@ -112,7 +112,7 @@ class Controller extends BaseController
      * @param $except
      * @return mixed
      */
-    protected function getQueryParams($request, $except)
+    protected function getQueryParams($request, $except = [])
     {
         return $request->except($except);
     }
