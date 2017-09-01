@@ -253,7 +253,7 @@ class Controller extends BaseController
             return $this->fractal->createData($resource)->toArray();
         }
 
-        // Ritorno all data and manually add pagination's data
+        // Return all data and manually add pagination's data
         $results = $this->fractal->createData($resource)->toArray();
 
         return [

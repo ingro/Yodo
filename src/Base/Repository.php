@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Validator;
 use Ingruz\Yodo\Exceptions\ApiLimitNotSetException;
 use Ingruz\Yodo\Exceptions\ModelValidationException;
 use Ingruz\Yodo\Traits\ClassNameInspectorTrait;
+use Ingruz\Yodo\Helpers\RulesMerger;
 
 class Repository
 {
@@ -104,7 +105,7 @@ class Repository
         $query = $this->getQuery($params);
 
         if ($params['limit'] == 0 and ! $this->canSkipPagination) {
-            throw new ApiLimitNotSetException('A limit greater than 0 must be set for this api request!');
+            throw new ApiLimitNotSetException('A limit must be set for this api request!');
         }
 
         if ($params['limit'] == 0 and $this->canSkipPagination) {
@@ -211,23 +212,23 @@ class Repository
      */
     protected function getQuery($params)
     {
-        // Includo tutte le relazioni dichiarate per il repository
+        // Include all the releations to eager load declared in the repository
         $query = $this->model->with($this->getEagerAssociations());
 
-        // Ottengo i parametri dei filtri impostati per il repository
+        // Obtain filter's params declared in the repository
         $queryParams = $this->getQueryParamsHandlers($params);
 
-        // Li ciclo...
+        // Cycle them...
         foreach ($queryParams as $queryParam => $dbAttr)
         {
-            // Se la chiave è presente nella query string
+            // Check if the key is present in the query string hash
             if (isset($params[$queryParam]))
             {
-                // Se il valore è una funzione allora aggiorno la query eseguendola
+                // If the value is a function call it
                 if (is_callable($dbAttr)) {
                     $query = $dbAttr($query, $params);
                 } else {
-                    // Altrimenti, se il valore è una chiave composta (comprende un .) imposto un where sulla relazione
+                    // Otherwise, if the value is a composed key (containing a .) set a whereHas on the relationship
                     $value = $params[$queryParam];
 
                     if (strpos($dbAttr, '.') !== false)
@@ -238,23 +239,23 @@ class Repository
                             $q->where($parts[1], $value);
                         });
                     } else {
-                        // Altrimenti imposto un where semplice su un attributo
+                        // Else, just add a simple where to the query
                         $query = $query->where($dbAttr, $value);
                     }
                 }
             }
         }
 
-        // Se è presente la chiave filter nella query string
+        // If the key `filter` is present into the query string
         if (isset($params['filter']))
         {
-            // Controllo che ci siano parametri su cui filtrare
+            // Check if there are columns where to execute a full text search
             if (count(static::$filterParams) > 0)
             {
                 $term = $params['filter'];
                 $filterParams = static::$filterParams;
 
-                // Aggiungo un where alla query in modo che matchi per tutti i parametri desiderati
+                // Add a where to the query for every column set
                 $query->where(function($q) use ($filterParams, $term)
                 {
                     foreach ($filterParams as $field)
@@ -265,28 +266,29 @@ class Repository
             }
         }
 
-        // Se è presente la chiave orderBy nella query string
+        // If the key `orderBy` is present into the query string
         if (isset($params['orderBy']))
         {
-            // Determino prima la direzione
+            // First obtain direction
             $orderDir = isset($params['orderDir']) ? $params['orderDir'] : 'asc';
 
+            // Obtain the order handlers from the repository
             $orderParams = $this->getOrderParamsHandlers();
 
-            // Se è impostata la chiave nell'array $orderParams...
+            // Check if the key is set into the handlers
             if (isset($orderParams[$params['orderBy']]))
             {
-                // Se il valore è una funzione la eseguo e la aggiungo alla query
+                // If the value is a function call it
                 if (is_callable($orderParams[$params['orderBy']]))
                 {
                     $action = $orderParams[$params['orderBy']];
                     $query = $action($query, $orderDir);
                 } else
                 {
-                    // Altrimenti uso il valore come chiave per l'ordinamento
+                    // Otherwise use it as column to order by
                     $query = $query->orderBy($orderParams[$params['orderBy']], $orderDir);
                 }
-            // Altrimenti aggiungo alla query un ordinamento standard
+            // Else just use the name as column to order by
             } else
             {
                 $query = $query->orderBy($params['orderBy'], $orderDir);
@@ -351,35 +353,8 @@ class Repository
      * @param string $op
      * @return array
      */
-    public function getValidationRules($op)
+    protected function getValidationRules($op)
     {
-        $rules = static::$rules;
-        $output = [];
-
-        if (empty ($rules))
-        {
-            return $output;
-        }
-
-        if ($op === 'update')
-        {
-            $merged = (isset($rules['update'])) ? array_merge_recursive($rules['save'], $rules['update']) : $rules['save'];
-        } else
-        {
-            $merged = (isset($rules['create'])) ? array_merge_recursive($rules['save'], $rules['create']) : $rules['save'];
-        }
-
-        foreach ($merged as $field => $rules)
-        {
-            if (is_array($rules))
-            {
-                $output[$field] = implode("|", $rules);
-            } else
-            {
-                $output[$field] = $rules;
-            }
-        }
-
-        return $output;
+        return RulesMerger::merge(static::$rules, $op);
     }
 }
