@@ -1,6 +1,6 @@
 <?php namespace Ingruz\Yodo\Exceptions;
 
-class ApiLimitNotSetException extends \Exception
+class ApiLimitNotValidException extends \Exception
 {
     //
 }

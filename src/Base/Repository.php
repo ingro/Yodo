@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
-use Ingruz\Yodo\Exceptions\ApiLimitNotSetException;
+use Ingruz\Yodo\Exceptions\ApiLimitNotValidException;
 use Ingruz\Yodo\Exceptions\ModelValidationException;
 use Ingruz\Yodo\Traits\ClassNameInspectorTrait;
 use Ingruz\Yodo\Helpers\RulesMerger;
@@ -20,6 +20,11 @@ class Repository
      * @var bool
      */
     protected $canSkipPagination = false;
+
+    /**
+     * @var int
+     */
+    protected $limitCap = 100;
 
     /**
      * @var array
@@ -59,13 +64,15 @@ class Repository
 
     /**
      * Repository constructor.
-     * @param Model|null $model
+     * @param null $model
      */
-    public function __construct(Model $model = null)
+    public function __construct($model = null)
     {
         // If a model is passed as argument use that, otherwise try to build one from repository's classname
-        if ($model) {
+        if ($model and $model instanceof Model) {
             $this->model = $model;
+        } else if ($model and is_string($model)) {
+            $this->model = app($model);
         } else {
             $this->model = app($this->getModelClass());
         }
@@ -94,9 +101,17 @@ class Repository
     }
 
     /**
+     * @return Model
+     */
+    public function getModel()
+    {
+        return $this->model;
+    }
+
+    /**
      * @param array $params
      * @return mixed
-     * @throws ApiLimitNotSetException
+     * @throws ApiLimitNotValidException
      */
     public function getAll($params = [])
     {
@@ -105,7 +120,11 @@ class Repository
         $query = $this->getQuery($params);
 
         if ($params['limit'] == 0 and ! $this->canSkipPagination) {
-            throw new ApiLimitNotSetException('A limit must be set for this api request!');
+            throw new ApiLimitNotValidException('Please set a limit greather than 0');
+        }
+
+        if ($params['limit'] > $this->limitCap) {
+            throw new ApiLimitNotValidException('Please set a limit below ' . $this->limitCap);
         }
 
         if ($params['limit'] == 0 and $this->canSkipPagination) {

@@ -124,4 +124,11 @@ class ControllerTest extends TestCase
 
         Post::findOrFail(12);
     }
+
+    public function testApiLimitValidation()
+    {
+        $response = $this->json('GET', 'posts?limit=500');
+
+        $response->assertStatus(500);
+    }
 }

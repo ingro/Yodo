@@ -1,8 +1,10 @@
 <?php namespace Ingruz\Yodo\Test;
 
 use App\Post;
+use App\PostWithEvents;
 use App\Repositories\PostRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Ingruz\Yodo\Exceptions\ApiLimitNotValidException;
 
 class RepositoryTest extends TestCase
 {
@@ -16,6 +18,20 @@ class RepositoryTest extends TestCase
         parent::setUp();
 
         $this->repository = new PostRepository();
+    }
+
+    public function testInstantiation() {
+        $repo = new PostRepository();
+
+        $this->assertInstanceOf(Post::class, $repo->getModel());
+
+        $repo = new PostRepository(new Post());
+
+        $this->assertInstanceOf(Post::class, $repo->getModel());
+
+        $repo = new PostRepository(PostWithEvents::class);
+
+        $this->assertInstanceOf(PostWithEvents::class, $repo->getModel());
     }
 
     public function testSimpleGetAll()
@@ -91,5 +107,22 @@ class RepositoryTest extends TestCase
         $this->expectException(ModelNotFoundException::class);
 
         Post::findOrFail(57);
+    }
+
+    public function testApiLimitValidation()
+    {
+        $this->expectException(ApiLimitNotValidException::class);
+        $this->expectExceptionMessage('Please set a limit below 100');
+
+        $this->repository->getAll([
+            'limit' => 500
+        ]);
+
+        $this->expectException(ApiLimitNotValidException::class);
+        $this->expectExceptionMessage('Please set a limit greather than 0');
+
+        $this->repository->getAll([
+            'limit' => 0
+        ]);
     }
 }
