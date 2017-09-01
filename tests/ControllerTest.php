@@ -129,6 +129,6 @@ class ControllerTest extends TestCase
     {
         $response = $this->json('GET', 'posts?limit=500');
 
-        $response->assertStatus(500);
+        $response->assertStatus(400);
     }
 }

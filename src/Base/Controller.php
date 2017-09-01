@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 use Ingruz\Yodo\Defaults\TransformerDefault;
+use Ingruz\Yodo\Exceptions\ApiLimitNotValidException;
 use Ingruz\Yodo\Traits\ClassNameInspectorTrait;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
@@ -125,6 +126,7 @@ class Controller extends BaseController
     protected function buildIndexData(Request $request, $except = [])
     {
         $queryParams = $this->getQueryParams($request, $except);
+
         $items = $this->repository->getAll($queryParams);
 
         return $this->serializeCollection($items, $queryParams);
@@ -146,12 +148,19 @@ class Controller extends BaseController
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function index(Request $request)
     {
-        $data = $this->buildIndexData($request);
+        try {
+            $data = $this->buildIndexData($request);
 
-        return response()->json($data);
+            return response()->json($data);
+        } catch (ApiLimitNotValidException $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -274,9 +283,9 @@ class Controller extends BaseController
     /**
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondNotAuthorized()
+    /*protected function respondNotAuthorized()
     {
         return response()->json(['error' => 'You are not authorized!'], 403);
-    }
+    }*/
 }
 
