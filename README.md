@@ -64,7 +64,7 @@ It's possible to customize in many way how a Repository will work, expecially wh
 
 - **static $filterParams** (defaults to []): define a list of columns on which will be performed a full-text search when the filter parameter (`q`) is specified;
 
-- **static $queryParamsHandlers** (defaults to []): define an hash of possible query params that could be mapped to proper database column or handled by a closude, more detailed information in the following chapters;
+- **static $queryParamsHandlers** (defaults to []): define an hash of possible query params that could be mapped to proper database column or handled by a closure, more detailed information in the following chapters;
 
 - **static $orderParamsHandlers** (defaults to []): same as `$queryParamsHandler` but for ordering;
 
