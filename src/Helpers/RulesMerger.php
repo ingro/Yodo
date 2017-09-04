@@ -1,7 +1,11 @@
 <?php namespace Ingruz\Yodo\Helpers;
 
 class RulesMerger {
-    public static function merge($rules, $op) {
+    /**
+     * @param array $rules
+     * @param string $operation
+     */
+    public static function merge($rules, $operation) {
         $result = [];
 
         if (empty ($rules))
@@ -10,7 +14,7 @@ class RulesMerger {
         }
 
         // If the operation is not a known one returns just the `save` array if preset, otherwise the full $rules array
-        if ($op !== 'update' and $op !== 'create') {
+        if ($operation !== 'update' and $operation !== 'create') {
             if (isset($rules['save'])) {
                 return $rules['save'];
             }
@@ -19,18 +23,18 @@ class RulesMerger {
         }
 
         // If the $rules array has no key `save` return the full $rules array
-        if (! isset($rules['save']) and ! isset($rules[$op]))
+        if (! isset($rules['save']) and ! isset($rules[$operation]))
         {
             return $rules;
         }
 
         // If the $rules has no key `save` but one named as the operation return just that
-        if (! isset($rules['save']) and isset($rules[$op]))
+        if (! isset($rules['save']) and isset($rules[$operation]))
         {
-            return $rules[$op];
+            return $rules[$operation];
         }
 
-        $merged = (isset($rules[$op])) ? array_merge_recursive($rules['save'], $rules[$op]) : $rules['save'];
+        $merged = (isset($rules[$operation])) ? array_merge_recursive($rules['save'], $rules[$operation]) : $rules['save'];
 
         foreach ($merged as $field => $rules)
         {

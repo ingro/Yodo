@@ -6,16 +6,15 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-
-use Ingruz\Yodo\Defaults\TransformerDefault;
-use Ingruz\Yodo\Exceptions\ApiLimitNotValidException;
-use Ingruz\Yodo\Traits\ClassNameInspectorTrait;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Item;
 use League\Fractal\Resource\Collection;
-
 use League\Fractal\Serializer\ArraySerializer;
+
+use Ingruz\Yodo\Defaults\TransformerDefault;
+use Ingruz\Yodo\Exceptions\ApiLimitNotValidException;
+use Ingruz\Yodo\Traits\ClassNameInspectorTrait;
 
 class Controller extends BaseController
 {

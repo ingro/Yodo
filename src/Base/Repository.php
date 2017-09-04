@@ -162,6 +162,26 @@ class Repository
     }
 
     /**
+     * @param  string $key
+     * @param  mixed $value
+     * @return mixed
+     */
+    public function getFirstBy($key, $value, $operand = '=')
+    {
+        return $this->model->where($key, $operand, $value)->first();
+    }
+
+     /**
+     * @param  string $key
+     * @param  mixed $value
+     * @return mixed
+     */
+    public function getManyBy($key, $value, $operand = '=')
+    {
+        return $this->model->where($key, $operand, $value)->get();
+    }
+
+    /**
      * Create a new item
      *
      * @param  array $data
