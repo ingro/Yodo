@@ -299,7 +299,16 @@ class Repository
                 {
                     foreach ($filterParams as $field)
                     {
-                        $q->orWhere($field, 'LIKE', '%' . $term . '%');
+                        if (strpos($field, '.') !== false)
+                        {
+                            $parts = explode('.', $field);
+
+                            $q->orWhereHas($parts[0], function($rq) use($parts, $term) {
+                                $rq->where($parts[1], 'LIKE', '%' . $term . '%');
+                            });
+                        } else {
+                            $q->orWhere($field, 'LIKE', '%' . $term . '%');
+                        }
                     }
                 });
             }

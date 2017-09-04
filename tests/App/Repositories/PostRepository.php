@@ -7,6 +7,8 @@ class PostRepository extends Repository
 {
     static $eagerAssociations = ['comments'];
 
+    static $filterParams = ['title', 'comments.username'];
+
     static $rules = [
         'save' => [
             'title' => 'required'

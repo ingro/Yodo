@@ -14,7 +14,7 @@ Via Composer
 $ composer require ingruz/yodo
 ```
 
-## Usage
+## Getting started
 
 Suppose you need to create CRUD (or, more precisely BREAD) handlers for a `Post` model, you should first create a `PostController` class inside your `app/Http/Controllers` folder.
 
@@ -23,7 +23,6 @@ Suppose you need to create CRUD (or, more precisely BREAD) handlers for a `Post`
 use Ingruz\Yodo\Base\Controller;
 
 class PostController extends Controller {}
-
 ```
 
 Then you should tell your router to use that controller for handling the Post resource:
@@ -34,9 +33,11 @@ Route::resource('posts', PostController::class);
 
 And that's it! You now should have a full working BREAD endpoint for the `Post` resource, with enabled support for pagination, filtering, sorting and more!
 
+## Usage
+
 Of course you can customize most of Yodo's behaviour.
 
-Other two pieces of Yodo are Repositories and Transformers. By default Yodo will search for a custom `Repository` in `app/Repositories` folder, and for a custom `Transformer` in `app/Transformers` (in future both paths will be customizable), searching with the name of the controller's resource (for example if the class name is `PostController` it will search for `PostRepository` and `PostTransformer` respectively).
+In addition to Controllers there are two other main pieces of Yodo that are Repositories and Transformers. By default Yodo will search for a custom `Repository` in `app/Repositories` folder, and for a custom `Transformer` in `app/Transformers` (in future both paths will be customizable), searching with the name of the controller's resource (for example if the class name is `PostController` it will search for `PostRepository` and `PostTransformer` respectively).
 
 You can always specify them with a custom path or name overriding protected `getRepositoryClass` or `getTransformerClass` methods in your controller.
 

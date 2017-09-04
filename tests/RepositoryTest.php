@@ -1,6 +1,7 @@
 <?php namespace Ingruz\Yodo\Test;
 
 use App\Post;
+use App\Comment;
 use App\PostWithEvents;
 use App\Repositories\PostRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -124,5 +125,22 @@ class RepositoryTest extends TestCase
         $this->repository->getAll([
             'limit' => 0
         ]);
+    }
+
+    public function testFilteringByRelation()
+    {
+        $post = $this->repository->create([
+            'title' => 'A test post',
+            'content' => 'Lorem ipsum'
+        ]);
+
+        factory(Comment::class)->create([
+            'post_id' => $post->id,
+            'username' => 'King Aegon Targaryen'
+        ]);
+
+        $res = $this->repository->getAll(['filter' => 'aegon']);
+
+        $this->assertCount(1, $res);
     }
 }
