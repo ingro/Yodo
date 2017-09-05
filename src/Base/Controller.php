@@ -71,8 +71,13 @@ class Controller extends BaseController
     protected function getRepositoryClass()
     {
         $ns = $this->getClassNameParts();
-        $domain = $this->getRootNamespace($ns);
         $name = $this->getRelatedClassName('Controller', 'Repository', $ns);
+
+        if (config('yodo.repositoriesNamespace')) {
+            return config('yodo.repositoriesNamespace') . $name;
+        }
+
+        $domain = $this->getRootNamespace($ns);
 
         return $domain . '\\Repositories\\' . $name;
     }
@@ -83,10 +88,15 @@ class Controller extends BaseController
     protected function getTransformerClass()
     {
         $ns = $this->getClassNameParts();
-        $domain = $this->getRootNamespace($ns);
         $name = $this->getRelatedClassName('Controller', 'Transformer', $ns);
 
-        $result = $domain . '\\Transformers\\' . $name;
+        if (config('yodo.transformersNamespace')) {
+            $result = config('yodo.transformersNamespace') . $name;
+        } else {
+            $domain = $this->getRootNamespace($ns);
+
+            $result = $domain . '\\Transformers\\' . $name;
+        }
 
         if (class_exists($result)) {
             return $result;
@@ -157,7 +167,7 @@ class Controller extends BaseController
 
             return response()->json($data);
         } catch (ApiLimitNotValidException $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+            return response()->json(['error' => $e->getMessage()], config('yodo.apiLimitExceptionHttpCode', 400));
         } catch (\Exception $e) {
             throw $e;
         }
@@ -176,7 +186,7 @@ class Controller extends BaseController
 
             return response()->json($this->serializeItem($result));
         } catch (ModelValidationException $e) {
-            return response()->json(['error' => json_decode($e->getMessage())], 422);
+            return response()->json(['error' => json_decode($e->getMessage())], config('yodo.modelValidationExceptionHttpCode', 422));
         } catch (\Exception $e) {
             throw $e;
         }
@@ -213,7 +223,7 @@ class Controller extends BaseController
 
             return response()->json($this->serializeItem($result));
         } catch (ModelValidationException $e) {
-            return response()->json(['error' => json_decode($e->getMessage())], 422);
+            return response()->json(['error' => json_decode($e->getMessage())], config('yodo.modelValidationExceptionHttpCode', 422));
         } catch (\Exception $e) {
             throw $e;
         }

@@ -40,6 +40,8 @@ class TestCase extends OrchestraTestCase
             'prefix' => '',
         ]);
 
+        // $app['config']->set('yodo.repositoriesNamespace', 'App\\Data\\Repositories\\');
+
         // Route::model('post', Post::class);
     }
 

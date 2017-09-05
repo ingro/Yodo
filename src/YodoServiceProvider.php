@@ -13,7 +13,9 @@ class YodoServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->publishes([
+            __DIR__.'/../config/yodo.php' => config_path('yodo.php'),
+        ]);
     }
 
     /**

@@ -3,9 +3,10 @@
 - write more tests
   - test repository method `getAll` with no limits
   - test more merge rules combinations
-- allow to change default folders path for classes, maybe via a config option or in the ServiceProvider?
-- allow to configure http error codes for handled Exceptions?
+  - test the use of custom repositoriesNamespace and transformersNamespace
+  - test the use of custom http code for exceptions
+- test the use of YodoServiceProvider and the correct publication of `config/yodo.php`
 - handle failing during update/create/delete that don't cause exceptions?
 - write some more helpful docs
-- permit to handler sorting by a relation? (see OrderRepository)
+- handle sorting by a field of a relation? (see `OrderRepository` in inspiration project)
 - use Laravel 5.5 built-in trasformers?
