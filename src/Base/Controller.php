@@ -233,6 +233,7 @@ class Controller extends BaseController
         {
             return response()->json(['result' => 'ok']);
         }
+        // TODO: else return error?
     }
 
     /**
@@ -281,13 +282,5 @@ class Controller extends BaseController
             ]
         ];
     }
-
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
-    /*protected function respondNotAuthorized()
-    {
-        return response()->json(['error' => 'You are not authorized!'], 403);
-    }*/
 }
 
