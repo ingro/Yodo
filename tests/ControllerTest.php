@@ -48,8 +48,9 @@ class ControllerTest extends TestCase
     {
         $response  = $this->json('GET', 'posts/37');
 
-        $response->assertSuccessful();
-        $response->assertJsonStructure($this->itemJsonStructure);
+        $response
+            ->assertSuccessful()
+            ->assertJsonStructure($this->itemJsonStructure);
 
         $json = $response->decodeResponseJson();
 
@@ -69,8 +70,9 @@ class ControllerTest extends TestCase
             'content' => 'Ipsum Lorem'
         ]);
 
-        $response->assertSuccessful();
-        $response->assertJsonStructure($this->itemJsonStructure);
+        $response
+            ->assertSuccessful()
+            ->assertJsonStructure($this->itemJsonStructure);
 
         $json = $response->decodeResponseJson();
 
@@ -90,8 +92,9 @@ class ControllerTest extends TestCase
             'title' => $title
         ]);
 
-        $response->assertSuccessful();
-        $response->assertJsonStructure($this->itemJsonStructure);
+        $response
+            ->assertSuccessful()
+            ->assertJsonStructure($this->itemJsonStructure);
 
         $json = $response->decodeResponseJson();
 
@@ -110,15 +113,20 @@ class ControllerTest extends TestCase
             'content' => 'Some content'
         ]);
 
-        $response->assertStatus(500);
+        $response
+            ->assertStatus(422)
+            ->assertJson(['error' => [
+                'title' => []
+            ]]);
     }
 
     public function testDeleteRoute()
     {
         $response = $this->json('DELETE', 'posts/12');
 
-        $response->assertSuccessful();
-        $response->assertExactJson(['result' => 'ok']);
+        $response
+            ->assertSuccessful()
+            ->assertExactJson(['result' => 'ok']);
 
         $this->expectException(ModelNotFoundException::class);
 

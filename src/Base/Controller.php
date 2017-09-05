@@ -14,6 +14,7 @@ use League\Fractal\Serializer\ArraySerializer;
 
 use Ingruz\Yodo\Defaults\TransformerDefault;
 use Ingruz\Yodo\Exceptions\ApiLimitNotValidException;
+use Ingruz\Yodo\Exceptions\ModelValidationException;
 use Ingruz\Yodo\Traits\ClassNameInspectorTrait;
 
 class Controller extends BaseController
@@ -170,14 +171,15 @@ class Controller extends BaseController
      */
     public function store(Request $request)
     {
-        $result = $this->repository->create($request->all());
+        try {
+            $result = $this->repository->create($request->all());
 
-        if ($result)
-        {
             return response()->json($this->serializeItem($result));
+        } catch (ModelValidationException $e) {
+            return response()->json(['error' => json_decode($e->getMessage())], 422);
+        } catch (\Exception $e) {
+            throw $e;
         }
-
-        // TODO: return error
     }
 
     /**
@@ -206,14 +208,15 @@ class Controller extends BaseController
      */
     public function update(Request $request, $item)
     {
-        $result = $this->repository->update($item, $request->all());
+        try {
+            $result = $this->repository->update($item, $request->all());
 
-        if ($result)
-        {
             return response()->json($this->serializeItem($result));
+        } catch (ModelValidationException $e) {
+            return response()->json(['error' => json_decode($e->getMessage())], 422);
+        } catch (\Exception $e) {
+            throw $e;
         }
-
-        // TODO: return error
     }
 
     /**
