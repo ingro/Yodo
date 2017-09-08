@@ -1,5 +1,6 @@
 <?php namespace Ingruz\Yodo\Base;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Routing\Controller as BaseController;
@@ -119,8 +120,8 @@ class Controller extends BaseController
     }
 
     /**
-     * @param $request
-     * @param $except
+     * @param Request $request
+     * @param array $except
      * @return mixed
      */
     protected function getQueryParams($request, $except = [])
@@ -143,7 +144,7 @@ class Controller extends BaseController
     }
 
     /**
-     * @param $item
+     * @param array $item
      * @return array
      */
     protected function buildShowData($item)
@@ -154,10 +155,8 @@ class Controller extends BaseController
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function index(Request $request)
@@ -174,10 +173,9 @@ class Controller extends BaseController
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function store(Request $request)
     {
@@ -193,10 +191,8 @@ class Controller extends BaseController
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model|string $item
-     * @return \Illuminate\Http\Response
+     * @param Model $item
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($item)
     {
@@ -210,11 +206,10 @@ class Controller extends BaseController
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Illuminate\Database\Eloquent\Model $item
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Model $item
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function update(Request $request, $item)
     {
@@ -230,10 +225,8 @@ class Controller extends BaseController
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model $item
-     * @return \Illuminate\Http\Response
+     * @param Model $item
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($item)
     {
@@ -247,7 +240,7 @@ class Controller extends BaseController
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Model $item
+     * @param Model $item
      * @return array
      */
     protected function serializeItem($item)
@@ -258,7 +251,7 @@ class Controller extends BaseController
     }
 
     /**
-     * @param $items
+     * @param array $items
      * @param array $queryParams
      * @return array
      */
