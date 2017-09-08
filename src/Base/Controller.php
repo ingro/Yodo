@@ -75,7 +75,7 @@ class Controller extends BaseController
         $name = $this->getRelatedClassName('Controller', 'Repository', $ns);
 
         if (config('yodo.repositoriesNamespace')) {
-            return config('yodo.repositoriesNamespace') . $name;
+            return config('yodo.repositoriesNamespace') . '\\' . $name;
         }
 
         $domain = $this->getRootNamespace($ns);
@@ -92,7 +92,7 @@ class Controller extends BaseController
         $name = $this->getRelatedClassName('Controller', 'Transformer', $ns);
 
         if (config('yodo.transformersNamespace')) {
-            $result = config('yodo.transformersNamespace') . $name;
+            $result = config('yodo.transformersNamespace') . '\\' . $name;
         } else {
             $domain = $this->getRootNamespace($ns);
 

@@ -5,7 +5,7 @@
   - test more merge rules combinations
   - test the use of custom repositoriesNamespace and transformersNamespace
   - test the use of custom http code for exceptions
-- test the use of YodoServiceProvider and the correct publication of `config/yodo.php`
+  - test the use of YodoServiceProvider and the correct publication of `config/yodo.php` (how?)
 - handle failing during update/create/delete that don't cause exceptions?
 - write some more helpful docs
 - handle sorting by a field of a relation? (see `OrderRepository` in inspiration project)
