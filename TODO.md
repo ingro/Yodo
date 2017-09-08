@@ -10,3 +10,4 @@
 - write some more helpful docs
 - handle sorting by a field of a relation? (see `OrderRepository` in inspiration project)
 - use Laravel 5.5 built-in trasformers?
+- validate requests via Laravel Form Request Validation instead of define rules in the repository?

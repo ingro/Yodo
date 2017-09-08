@@ -6,6 +6,10 @@
 
 A set of utility to easily and rapidly create REST api with Laravel.
 
+## Requirements
+
+Yodo requires php 5.6 or above and is designed to work with Laravel 5.2 or above.
+
 ## Install
 
 Via Composer
@@ -16,7 +20,7 @@ $ composer require ingruz/yodo
 
 ## Getting started
 
-Suppose you need to create CRUD (or, more precisely BREAD) handlers for a `Post` model, you should first create a `PostController` class inside your `app/Http/Controllers` folder.
+Suppose you need to create CRUD (or, more precisely, BREAD) handlers for a `Post` model, you should first create a `PostController` class inside your `app/Http/Controllers` folder.
 
 ```php
 <?php
@@ -35,13 +39,13 @@ And that's it! You now should have a full working BREAD endpoint for the `Post` 
 
 ## Usage
 
-Of course you can customize most of Yodo's behaviour.
+Of course you can customize most of Yodo's behaviour!
 
 In addition to Controllers there are two other main pieces of Yodo that are Repositories and Transformers. By default Yodo will search for a custom `Repository` in `app/Repositories` folder, and for a custom `Transformer` in `app/Transformers` (in future both paths will be customizable), searching with the name of the controller's resource (for example if the class name is `PostController` it will search for `PostRepository` and `PostTransformer` respectively).
 
 You can always specify them with a custom path or name overriding protected `getRepositoryClass` or `getTransformerClass` methods in your controller.
 
-If you don't specify anything and Yodo can't find a suitable class, it will fall back to default `Repository` and `Trasformer`. In most cases you won't need to customize the Repository but this should happen more ofter for the Transformer, since the default one will just return the model as an array.
+If you don't specify anything and Yodo can't find a suitable class, it will fall back to default `Repository` and `Trasformer`. In most cases you won't need to customize the Repositories but this will happen more ofter for the Transformers, since the default one will just return the model as an array.
 
 ### Repository
 
@@ -54,9 +58,9 @@ use Ingruz\Yodo\Base\Repository;
 class PostRepository extends Repository {}
 ```
 
-Like the Controller, by default the Repository will search for it's model class in your root name space (so `PostRepository` will look for `App\Post` model). You can always specify by overriding the `getModelClass` method or by passing direcly an instance to the Repository's constructor (also passing a string is supported).
+Like the Controller, by default the Repository will search for it's model class in your root name space (so `PostRepository` will look for `App\Post` model). You can always specify by overriding the `getModelClass` method or by passing direcly an instance to the Repository's constructor (also passing the classname as string is supported).
 
-It's possible to customize in many way how a Repository will work, expecially when handling the `getAll` method that it's used by the `index` method of the Controller:
+It's possible to customize in many way how a Repository works, expecially when handling the `getAll` method that it's used by the `index` method inside the resource Controller:
 
 - **static $eagerAssociations** (defaults to []): define a list of associations that will be automatically eager-loaded;
 
@@ -64,15 +68,53 @@ It's possible to customize in many way how a Repository will work, expecially wh
 
 - **static $filterParams** (defaults to []): define a list of columns on which will be performed a full-text search when the filter parameter (`q`) is specified;
 
-- **static $queryParamsHandlers** (defaults to []): define an hash of possible query params that could be mapped to proper database column or handled by a closure, more detailed information in the following chapters;
+- **static $queryParamsHandlers** (defaults to []): define an hash of possible query params that could be mapped to database column or handled by a closure, more detailed information in the following chapters;
 
 - **static $orderParamsHandlers** (defaults to []): same as `$queryParamsHandler` but for ordering;
 
-- **static $rules**: define a serie of rules to validate the model during create and update phases, more detailed information in the following chapters.
+- **static $rules**: define a serie of rules to validate the model during create and update phases using Laravel built-in Validator, more detailed information in the following chapters.
+
+#### Handle query's params
+
+TODO
+
+#### Request validation
+
+It is possible to specify an array of [Laravel's validation rules](https://laravel.com/docs/5.5/validation#available-validation-rules) that will be used by the repository to validate the requests before creating and updating actions.
+
+You can define the rules as a plain array:
+
+```php
+static $rules = [
+    'title' => 'required|min:10',
+    'date' => 'date'
+];
+```
+
+Or just define rules for a specific action:
+```php
+static $rules = [
+    'create' => [
+        'date' => 'date
+    ]
+];
+```
+
+Or define general rules that should always be checked and rules specific to an action:
+```php
+static $rules = [
+    'save' => [
+        'title' => 'required|min:10'
+    ],
+    'create' => [
+        'date' => 'date'
+    ]
+];
+```
 
 ### Transformer
 
-Yodo uses the excellent [Fractal](http://fractal.thephpleague.com/)  library for handling the transformation of Models.
+Yodo uses the excellent [Fractal](http://fractal.thephpleague.com/) library for handling the transformation of Models in json.
 
 To create a custom Transformer just extends Fractal's `TransformerAbstract`:
 
@@ -90,6 +132,31 @@ class PostTransformer extends Fractal\TransformerAbstract
     }
 }
 ```
+
+### Exceptions
+
+Yodo will automatically returns error responses following two exceptions:
+
+- `ModelValidationException`: this exception will be raised if the payload of a create or update request doesn't satisfy the validation rules defined inside the repository. A response will be returned with the validation error messages with the HTTP code 422;
+- `ApiLimitNotValidException`: this exception will be raised if a list request contain a limit not valid (above the `$limitCap` defined in the repository or with a limit set to 0 where not allowed). A response will be return with the HTTP code 400.
+
+### Customization
+
+To customize some default aspects of Yodo you will need to use its service provider. If you are on Laravel 5.5 or above you don't have to do anything, Package Discovery will include it for you.
+
+Otherwise just add it to your config/app.php file providers's array:
+
+```php
+'providers' => [
+    // ...
+
+    Ingruz\Yodo\YodoServiceProvider::class
+]
+```
+
+The you can publish the yodo.php config file with the command `php artisan vendor:publish`.
+
+Inside you can customize Repositories and Transformers namespace roots and which http error code Yodo will return in case of `ModelValidationException` and `ApiLimitNotValidException`.
 
 ## Change log
 
