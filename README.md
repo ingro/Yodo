@@ -76,7 +76,25 @@ It's possible to customize in many way how a Repository works, expecially when h
 
 #### Handle query's params
 
-TODO
+Query params defined here will be automatically handled by the repository, you can define them as an hash like this:
+
+```php
+static $queryParamsHandlers = [
+    'writer' => 'writer_id',
+    'commentsBy' => 'comments.user_id'
+];
+
+public function getQueryParams($requestParams) {
+    $queryParams = parent::getQueryParams($requestParams);
+
+    $queryParams[''] = function($query, $params) {
+        return $query->whereHas('comments', function($q) use($params) {
+            return ...
+        });
+    };
+
+    return $queryParams;
+```
 
 #### Request validation
 
