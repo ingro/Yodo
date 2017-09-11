@@ -96,6 +96,7 @@ public function getQueryParams($requestParams) {
     };
 
     return $queryParams;
+}
 ```
 
 So the values of the hash could be:
@@ -160,7 +161,6 @@ public function boot() {
 - `create($data)`: create a new item with the provided `$data`;
 - `update($item, $data)`: update an `$item` (could be an actual instance or a string id) with the provided `$data`;
 - `delete($item)`: delete an `$item` from the database.
-
 
 ### Transformer
 

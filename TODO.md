@@ -7,7 +7,7 @@
   - test the use of custom http code for exceptions
   - test the use of YodoServiceProvider and the correct publication of `config/yodo.php` (how?)
 - handle failing during update/create/delete that don't cause exceptions?
-- write some more helpful docs
+- improve docs (more examples, public APIS, create a static site?)
 - handle sorting by a field of a relation? (see `OrderRepository` in inspiration project)
 - think about a syntax that will translate a query parameter to a Eloquent's query scope
 - use Laravel 5.5 built-in trasformers?
