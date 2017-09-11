@@ -76,25 +76,33 @@ It's possible to customize in many way how a Repository works, expecially when h
 
 #### Handle query's params
 
-Query params defined here will be automatically handled by the repository, you can define them as an hash like this:
+Query parameters defined here will be automatically handled by the repository, you can define them as an hash in `$queryParamsHandlers` or by returning an array overriding the method `getQueryParams`:
 
 ```php
 static $queryParamsHandlers = [
     'writer' => 'writer_id',
-    'commentsBy' => 'comments.user_id'
+    'commentedByUser' => 'comments.user_id'
 ];
+
+// ...
 
 public function getQueryParams($requestParams) {
     $queryParams = parent::getQueryParams($requestParams);
 
-    $queryParams[''] = function($query, $params) {
+    $queryParams['after'] = function($query, $params) {
         return $query->whereHas('comments', function($q) use($params) {
-            return ...
+            $q->where('created_by', '>=', $params['after']);
         });
     };
 
     return $queryParams;
 ```
+
+So the values of the hash could be:
+
+- a simple string: maps the query parameter to a column on the model's database table;
+- a simple string, but with a dot (.): maps the query parameter to a column of a related model's database table;
+- a closure, which are passed the current `$query` object and the array of query parameters, which could be used to handle more advanced situations.
 
 #### Request validation
 
@@ -129,6 +137,30 @@ static $rules = [
     ]
 ];
 ```
+
+#### Events
+
+A great place where setting up model's events is the `boot` method of the repository:
+
+```php
+public function boot() {
+    Post::created(function($model) {
+        app('notifier')->notifyNewPost($model); // pseudo-code
+    });
+}
+```
+
+#### Public API
+
+- `getModel`: returns an instance of the repository model, useful as a start to create custom methods;
+- `getAll($params)`: returns all the rows filtered, ordered and paginated by `$params`;
+- `getById($id)`: returns a row by its `$id`;
+- `getFirstBy($key, $value, $operand)`: get the first row that match a where clause;
+- `getManyBy($key, $value, $operand)`: get all the rows that match a where clause;
+- `create($data)`: create a new item with the provided `$data`;
+- `update($item, $data)`: update an `$item` (could be an actual instance or a string id) with the provided `$data`;
+- `delete($item)`: delete an `$item` from the database.
+
 
 ### Transformer
 
