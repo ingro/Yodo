@@ -8,7 +8,7 @@ A set of utility to easily and rapidly create REST api with Laravel.
 
 ## Requirements
 
-Yodo requires php 5.6 or above and is designed to work with Laravel 5.2 or above.
+Yodo requires php 7.0 or above and is designed to work with Laravel 5.5 or above.
 
 ## Install
 
