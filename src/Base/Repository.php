@@ -164,6 +164,7 @@ class Repository
     /**
      * @param  string $key
      * @param  mixed $value
+     * @param  string $operand
      * @return mixed
      */
     public function getFirstBy($key, $value, $operand = '=')

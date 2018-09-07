@@ -7,25 +7,18 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use League\Fractal\Manager;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use League\Fractal\Resource\Item;
-use League\Fractal\Resource\Collection;
-use League\Fractal\Serializer\ArraySerializer;
 
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
+use League\Fractal\Serializer\ArraySerializer;
 use Ingruz\Yodo\Defaults\TransformerDefault;
 use Ingruz\Yodo\Exceptions\ApiLimitNotValidException;
 use Ingruz\Yodo\Exceptions\ModelValidationException;
 use Ingruz\Yodo\Traits\ClassNameInspectorTrait;
+use Spatie\Fractalistic\Fractal;
 
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests, ClassNameInspectorTrait;
-
-    /**
-     * @var Manager
-     */
-    protected $fractal;
 
     /**
      * @var Repository
@@ -42,8 +35,6 @@ class Controller extends BaseController
      */
     public function __construct()
     {
-        $this->fractal = new Manager();
-
         $this->repository = $this->getRepository();
         $this->transformerClass = $this->getTransformerClass();
     }
@@ -245,39 +236,43 @@ class Controller extends BaseController
      */
     protected function serializeItem($item)
     {
-        $this->fractal->setSerializer(new ArraySerializer());
-        $resource = new Item($item, new $this->transformerClass);
-        return $this->fractal->createData($resource)->toArray();
+        return Fractal::create()
+            ->item($item)
+            ->transformWith(new $this->transformerClass)
+            ->serializeWith(ArraySerializer::class)
+            ->toArray();
     }
 
     /**
-     * @param array $items
+     * @param LengthAwarePaginator|array $items
      * @param array $queryParams
      * @return array
      */
     protected function serializeCollection($items, $queryParams = [])
     {
-        $resource = new Collection($items, new $this->transformerClass);
-
-        // Return paginated data
         if (get_class($items) === LengthAwarePaginator::class)
         {
             $items->appends($queryParams);
-            $resource->setPaginator(new IlluminatePaginatorAdapter($items));
 
-            return $this->fractal->createData($resource)->toArray();
+            return Fractal::create()
+                ->collection($items->getCollection())
+                ->transformWith(new $this->transformerClass)
+                ->paginateWith(new IlluminatePaginatorAdapter($items))
+                ->toArray();
         }
 
-        // Return all data and manually add pagination's data
-        $results = $this->fractal->createData($resource)->toArray();
+        $data = Fractal::create()
+            ->collection($items)
+            ->transformWith(new $this->transformerClass)
+            ->toArray();
 
         return [
-            'data' => $results['data'],
+            'data' => $data['data'],
             'meta' => [
                 'pagination' => [
-                    'total' => count($results['data']),
-                    'count' => count($results['data']),
-                    'perPage' => 0,
+                    'total' => count($data['data']),
+                    'count' => count($data['data']),
+                    'per_page' => 0,
                     'current_page' => 1,
                     'total_pages' => 1,
                     'links' => []

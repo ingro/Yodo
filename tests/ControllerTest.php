@@ -44,6 +44,37 @@ class ControllerTest extends TestCase
         $this->assertEquals(20, $json['meta']['pagination']['total_pages']);
     }
 
+    public function testIndexRouteWithNoPagination()
+    {
+        $response = $this->json('GET', 'posts?limit=0');
+
+        $response->assertSuccessful();
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => $this->itemJsonStructure
+            ],
+            'meta' => [
+                'pagination' => [
+                    'total',
+                    'count',
+                    'per_page',
+                    'current_page',
+                    'total_pages',
+                    'links'
+                ]
+            ]
+        ]);
+
+        $json = $response->decodeResponseJson();
+
+        $this->assertCount(100, $json['data']);
+        $this->assertEquals(100, $json['meta']['pagination']['total']);
+        $this->assertEquals(100, $json['meta']['pagination']['count']);
+        $this->assertEquals(0, $json['meta']['pagination']['per_page']);
+        $this->assertEquals(1, $json['meta']['pagination']['current_page']);
+        $this->assertEquals(1, $json['meta']['pagination']['total_pages']);
+    }
+
     public function testShowRoute()
     {
         $response  = $this->json('GET', 'posts/37');
@@ -136,6 +167,13 @@ class ControllerTest extends TestCase
     public function testApiLimitValidation()
     {
         $response = $this->json('GET', 'posts?limit=500');
+
+        $response->assertStatus(400);
+    }
+
+    public function testCanSkipPagination()
+    {
+        $response = $this->json('GET', 'comments?limit=0');
 
         $response->assertStatus(400);
     }

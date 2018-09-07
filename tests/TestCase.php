@@ -1,6 +1,7 @@
 <?php namespace Ingruz\Yodo\Test;
 
 use App\Comment;
+use App\Http\Controllers\CommentController;
 use App\Post;
 use App\Http\Controllers\PostController;
 use Illuminate\Database\Schema\Blueprint;
@@ -80,6 +81,7 @@ class TestCase extends OrchestraTestCase
     {
         Route::group(['middleware' => 'bindings'], function() {
             Route::resource('posts', PostController::class);
+            Route::resource('comments', CommentController::class);
         });
     }
 }

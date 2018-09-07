@@ -4,6 +4,7 @@ class RulesMerger {
     /**
      * @param array $rules
      * @param string $operation
+     * @return array
      */
     public static function merge($rules, $operation) {
         $result = [];

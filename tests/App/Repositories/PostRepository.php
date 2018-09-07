@@ -5,6 +5,8 @@ use Ingruz\Yodo\Base\Repository;
 
 class PostRepository extends Repository
 {
+    protected $canSkipPagination = true;
+
     static $eagerAssociations = ['comments'];
 
     static $filterParams = ['title', 'comments.username'];
