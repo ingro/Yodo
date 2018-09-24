@@ -44,6 +44,29 @@ class RepositoryTest extends TestCase
         $this->assertInstanceOf(Post::class, $res[0]);
     }
 
+    public function testGetAllFiltered()
+    {
+        for($i = 0; $i < 3; $i++) {
+            factory(Post::class)->create([
+                'author' => 'pincopanco'
+            ]);
+        }
+
+        for($i = 0; $i < 7; $i++) {
+            factory(Post::class)->create([
+                'author' => 'pancopinco'
+            ]);
+        }
+
+        $res = $this->repository->getAll(['author' => 'pincopanco']);
+
+        $this->assertCount(3, $res);
+        
+        $res = $this->repository->getAll(['author_like' => 'panco']);
+
+        $this->assertCount(10, $res);
+    }
+
     public function testGetById()
     {
         $res = $this->repository->getById(5);

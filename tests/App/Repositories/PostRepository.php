@@ -11,6 +11,16 @@ class PostRepository extends Repository
 
     static $filterParams = ['title', 'comments.username'];
 
+    public function getQueryParamsHandlers($requestParams)
+    {
+        return [
+            'author' => 'author',
+            'author_like' => function($query, $params) {
+                return $query->where('author', 'LIKE', '%' . $params['author_like'] . '%');
+            }
+        ];
+    }
+
     static $rules = [
         'save' => [
             'title' => 'required'

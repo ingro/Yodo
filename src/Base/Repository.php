@@ -175,6 +175,7 @@ class Repository
      /**
      * @param  string $key
      * @param  mixed $value
+     * @param string $operand
      * @return mixed
      */
     public function getManyBy($key, $value, $operand = '=')
@@ -183,10 +184,9 @@ class Repository
     }
 
     /**
-     * Create a new item
-     *
-     * @param  array $data
+     * @param array $data
      * @return Model
+     * @throws ModelValidationException
      */
     public function create(array $data)
     {
@@ -198,7 +198,8 @@ class Repository
     /**
      * @param mixed $item
      * @param array $data
-     * @return bool
+     * @return bool|Model
+     * @throws ModelValidationException
      */
     public function update($item, $data)
     {
@@ -223,10 +224,9 @@ class Repository
     }
 
     /**
-     * Delete an item
-     *
-     * @param  mixed $item
-     * @return boolean
+     * @param $item
+     * @return bool|null
+     * @throws \Exception
      */
     public function delete($item)
     {
@@ -268,9 +268,9 @@ class Repository
                 if (is_callable($dbAttr)) {
                     $query = $dbAttr($query, $params);
                 } else {
-                    // Otherwise, if the value is a composed key (containing a .) set a whereHas on the relationship
                     $value = $params[$queryParam];
 
+                    // Otherwise, if the value is a composed key (containing a .) set a whereHas on the relation
                     if (strpos($dbAttr, '.') !== false)
                     {
                         $parts = explode('.', $dbAttr);
@@ -300,6 +300,7 @@ class Repository
                 {
                     foreach ($filterParams as $field)
                     {
+                        // if the field is a composed key (containing a .) use orWhereHas on the relation
                         if (strpos($field, '.') !== false)
                         {
                             $parts = explode('.', $field);
