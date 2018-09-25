@@ -1,8 +1,9 @@
 <?php namespace Ingruz\Yodo\Base;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Validator;
 use Ingruz\Yodo\Exceptions\ApiLimitNotValidException;
+use Ingruz\Yodo\Exceptions\InvalidQueryParamResolver;
 use Ingruz\Yodo\Exceptions\ModelValidationException;
 use Ingruz\Yodo\Traits\ClassNameInspectorTrait;
 use Ingruz\Yodo\Helpers\RulesMerger;
@@ -110,8 +111,9 @@ class Repository
 
     /**
      * @param array $params
-     * @return mixed
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|Builder[]|\Illuminate\Database\Eloquent\Collection
      * @throws ApiLimitNotValidException
+     * @throws InvalidQueryParamResolver
      */
     public function getAll($params = [])
     {
@@ -247,8 +249,9 @@ class Repository
     }
 
     /**
-     * @param $params
-     * @return mixed
+     * @param array $params
+     * @return Builder|Model
+     * @throws InvalidQueryParamResolver
      */
     protected function getQuery($params)
     {
@@ -267,6 +270,14 @@ class Repository
                 // If the value is a function call it
                 if (is_callable($dbAttr)) {
                     $query = $dbAttr($query, $params);
+                } else if (class_exists($dbAttr)) {
+                    $resolver = new $dbAttr($query, $params);
+
+                    if ($resolver instanceof AbstractQueryParamsResolver) {
+                        $query = $resolver->resolve();
+                    } else {
+                        throw new InvalidQueryParamResolver();
+                    }
                 } else {
                     $value = $params[$queryParam];
 
@@ -275,7 +286,7 @@ class Repository
                     {
                         $parts = explode('.', $dbAttr);
 
-                        $query = $query->whereHas($parts[0], function($q) use($parts, $value) {
+                        $query = $query->whereHas($parts[0], function(Builder $q) use($parts, $value) {
                             $q->where($parts[1], $value);
                         });
                     } else {
@@ -296,7 +307,7 @@ class Repository
                 $filterParams = static::$filterParams;
 
                 // Add a where to the query for every column set
-                $query->where(function($q) use ($filterParams, $term)
+                $query->where(function(Builder $q) use ($filterParams, $term)
                 {
                     foreach ($filterParams as $field)
                     {
@@ -305,7 +316,7 @@ class Repository
                         {
                             $parts = explode('.', $field);
 
-                            $q->orWhereHas($parts[0], function($rq) use($parts, $term) {
+                            $q->orWhereHas($parts[0], function(Builder $rq) use($parts, $term) {
                                 $rq->where($parts[1], 'LIKE', '%' . $term . '%');
                             });
                         } else {
@@ -387,7 +398,9 @@ class Repository
             return true;
         }
 
-        $validator = Validator::make($data, $rules);
+        $factory = app('validator');
+
+        $validator = $factory->make($data, $rules);
 
         if (! $validator->passes())
         {

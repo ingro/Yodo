@@ -65,6 +65,10 @@ class RepositoryTest extends TestCase
         $res = $this->repository->getAll(['author_like' => 'panco']);
 
         $this->assertCount(10, $res);
+
+        $res = $this->repository->getAll(['with_author' => 't']);
+
+        $this->assertCount(10, $res);
     }
 
     public function testGetById()

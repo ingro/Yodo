@@ -94,6 +94,8 @@ public function getQueryParams($requestParams) {
             $q->where('created_by', '>=', $params['after']);
         });
     };
+    
+    $queryParams['special'] = App\Resolvers\Post\SpecialParamResolver::class;
 
     return $queryParams;
 }
@@ -104,6 +106,7 @@ So the values of the hash could be:
 - a simple string: maps the query parameter to a column on the model's database table;
 - a simple string, but with a dot (.): maps the query parameter to a column of a related model's database table;
 - a closure, which are passed the current `$query` object and the array of query parameters, which could be used to handle more advanced situations.
+- a string representing a class that extends the base `Ingruz\Yodo\Base\AbstractQueryParamsResolver`
 
 #### Request validation
 
