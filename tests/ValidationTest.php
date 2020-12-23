@@ -10,7 +10,7 @@ class ValidationTest extends TestCase
      */
     protected $repository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

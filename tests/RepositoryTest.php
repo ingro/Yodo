@@ -14,7 +14,7 @@ class RepositoryTest extends TestCase
      */
     protected $repository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -47,13 +47,13 @@ class RepositoryTest extends TestCase
     public function testGetAllFiltered()
     {
         for($i = 0; $i < 3; $i++) {
-            factory(Post::class)->create([
+            Post::factory()->create([
                 'author' => 'pincopanco'
             ]);
         }
 
         for($i = 0; $i < 7; $i++) {
-            factory(Post::class)->create([
+            Post::factory()->create([
                 'author' => 'pancopinco'
             ]);
         }
@@ -161,7 +161,7 @@ class RepositoryTest extends TestCase
             'content' => 'Lorem ipsum'
         ]);
 
-        factory(Comment::class)->create([
+        Comment::factory()->create([
             'post_id' => $post->id,
             'username' => 'King Aegon Targaryen'
         ]);

@@ -13,11 +13,11 @@ class TestCase extends OrchestraTestCase
     /**
      * Set up the test env
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        $this->withFactories(__DIR__.'/factories');
+        // $this->withFactories(__DIR__.'/factories');
 
         $this->setUpDatabase($this->app);
 
@@ -66,12 +66,12 @@ class TestCase extends OrchestraTestCase
             $table->foreign('post_id')->references('id')->on('post');
         });
 
-        for($i = 0; $i < 100; $i++) {
-            factory(Post::class)->create();
-        }
+        // for($i = 0; $i < 100; $i++) {
+            Post::factory()->count(100)->create();
+        // }
 
         for($i = 0; $i<200; $i++) {
-            factory(Comment::class)->create([
+            Comment::factory()->create([
                 'post_id' => rand(1, 100)
             ]);
         }
