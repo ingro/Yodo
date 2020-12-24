@@ -1,9 +1,12 @@
-<?php namespace App;
+<?php namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class PostWithEvents extends Model
+class Post extends Model
 {
+    use HasFactory;
+
     protected $table = 'posts';
 
     protected $fillable = ['title', 'content'];

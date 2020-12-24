@@ -107,7 +107,7 @@ class Controller extends BaseController
         $domain = $this->getRootNamespace($ns);
         $name = $this->getRelatedClassName('Controller', '', $ns);
 
-        return $domain . '\\Model\\' . $name;
+        return $domain . '\\Models\\' . $name;
     }
 
     /**

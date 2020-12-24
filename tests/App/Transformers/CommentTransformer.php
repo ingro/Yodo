@@ -1,6 +1,6 @@
 <?php namespace App\Transformers;
 
-use App\Comment;
+use App\Models\Comment;
 use League\Fractal\TransformerAbstract;
 
 class CommentTransformer extends TransformerAbstract

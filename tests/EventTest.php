@@ -1,6 +1,6 @@
 <?php namespace Ingruz\Yodo\Test;
 
-use App\PostWithEvents;
+use App\Models\PostWithEvents;
 use App\Repositories\PostRepository;
 
 class EventTest extends TestCase

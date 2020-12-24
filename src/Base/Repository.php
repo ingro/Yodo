@@ -98,7 +98,7 @@ class Repository
         $domain = $this->getRootNamespace($ns);
         $name = $this->getRelatedClassName('Repository', '', $ns);
 
-        return $domain . '\\' . $name;
+        return $domain . '\\Models\\' . $name;
     }
 
     /**

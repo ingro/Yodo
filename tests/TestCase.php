@@ -1,8 +1,8 @@
 <?php namespace Ingruz\Yodo\Test;
 
-use App\Comment;
+use App\Models\Post;
+use App\Models\Comment;
 use App\Http\Controllers\CommentController;
-use App\Post;
 use App\Http\Controllers\PostController;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Route;
@@ -67,10 +67,10 @@ class TestCase extends OrchestraTestCase
         });
 
         // for($i = 0; $i < 100; $i++) {
-            Post::factory()->count(100)->create();
+        Post::factory()->count(100)->create();
         // }
 
-        for($i = 0; $i<200; $i++) {
+        for ($i = 0; $i<200; $i++) {
             Comment::factory()->create([
                 'post_id' => rand(1, 100)
             ]);

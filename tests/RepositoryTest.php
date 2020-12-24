@@ -1,8 +1,8 @@
 <?php namespace Ingruz\Yodo\Test;
 
-use App\Post;
-use App\Comment;
-use App\PostWithEvents;
+use App\Models\Post;
+use App\Models\Comment;
+use App\Models\PostWithEvents;
 use App\Repositories\PostRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Ingruz\Yodo\Exceptions\ApiLimitNotValidException;

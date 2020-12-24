@@ -1,6 +1,6 @@
 <?php namespace Ingruz\Yodo\Test;
 
-use App\Post;
+use App\Models\Post;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ControllerTest extends TestCase
