@@ -52,6 +52,7 @@ class TestCase extends OrchestraTestCase
             $table->increments('id');
             $table->string('title');
             $table->text('content');
+            $table->integer('rating')->nullable();
             $table->string('author')->nullable();
             $table->timestamps();
         });
@@ -66,9 +67,11 @@ class TestCase extends OrchestraTestCase
             $table->foreign('post_id')->references('id')->on('post');
         });
 
-        // for($i = 0; $i < 100; $i++) {
-        Post::factory()->count(100)->create();
-        // }
+        Post::factory()->count(20)->create([
+            'rating' => 5
+        ]);
+
+        Post::factory()->count(80)->create();
 
         for ($i = 0; $i<200; $i++) {
             Comment::factory()->create([

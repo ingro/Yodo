@@ -15,6 +15,7 @@ class PostTransformer extends TransformerAbstract
             'id' => $item->id,
             'title' => $item->title,
             'content' => $item->content,
+            'rating' => $item->rating,
             'comments_number' => $item->comments->count()
         ];
     }

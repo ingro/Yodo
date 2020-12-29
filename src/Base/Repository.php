@@ -57,6 +57,11 @@ class Repository
     /**
      * @var array
      */
+    static $defaultScopes = [];
+
+    /**
+     * @var array
+     */
     static $rules = [
         'save' => [],
         'create' => [],
@@ -258,6 +263,10 @@ class Repository
         // Include all the releations to eager load declared in the repository
         $query = $this->model->with($this->getEagerAssociations());
 
+        foreach ($this->getDefaultScopes() as $scope) {
+            $query->$scope();
+        }
+
         // Obtain filter's params declared in the repository
         $queryParams = $this->getQueryParamsHandlers($params);
 
@@ -281,17 +290,21 @@ class Repository
                 } else {
                     $value = $params[$queryParam];
 
+                    // If the string starts with :: it represent a scope
+                    if (strpos($dbAttr, '::') !== false) {
+                        $scope = str_replace('::', '', $dbAttr);
+
+                        $query->$scope($value);
                     // Otherwise, if the value is a composed key (containing a .) set a whereHas on the relation
-                    if (strpos($dbAttr, '.') !== false)
-                    {
+                    } else if (strpos($dbAttr, '.') !== false) {
                         $parts = explode('.', $dbAttr);
 
-                        $query = $query->whereHas($parts[0], function(Builder $q) use($parts, $value) {
+                        $query->whereHas($parts[0], function(Builder $q) use($parts, $value) {
                             $q->where($parts[1], $value);
                         });
                     } else {
                         // Else, just add a simple where to the query
-                        $query = $query->where($dbAttr, $value);
+                        $query->where($dbAttr, $value);
                     }
                 }
             }
@@ -381,6 +394,14 @@ class Repository
     public function getEagerAssociations()
     {
         return static::$eagerAssociations;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDefaultScopes()
+    {
+        return static::$defaultScopes;
     }
 
     /**

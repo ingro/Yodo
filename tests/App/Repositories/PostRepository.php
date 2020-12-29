@@ -20,7 +20,8 @@ class PostRepository extends Repository
             'author_like' => function( Builder $query, $params) {
                 return $query->where('author', 'LIKE', '%' . $params['author_like'] . '%');
             },
-            'with_author' => WithAuthorParamResolver::class
+            'with_author' => WithAuthorParamResolver::class,
+            'only_top' => '::withTopRating'
         ];
     }
 

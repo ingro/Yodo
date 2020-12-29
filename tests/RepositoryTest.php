@@ -4,6 +4,7 @@ use App\Models\Post;
 use App\Models\Comment;
 use App\Models\PostWithEvents;
 use App\Repositories\PostRepository;
+use App\Repositories\PostRepositoryWithScope;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Ingruz\Yodo\Exceptions\ApiLimitNotValidException;
 
@@ -46,13 +47,13 @@ class RepositoryTest extends TestCase
 
     public function testGetAllFiltered()
     {
-        for($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             Post::factory()->create([
                 'author' => 'pincopanco'
             ]);
         }
 
-        for($i = 0; $i < 7; $i++) {
+        for ($i = 0; $i < 7; $i++) {
             Post::factory()->create([
                 'author' => 'pancopinco'
             ]);
@@ -69,6 +70,10 @@ class RepositoryTest extends TestCase
         $res = $this->repository->getAll(['with_author' => 't']);
 
         $this->assertCount(10, $res);
+
+        $res = $this->repository->getAll(['only_top' => 't']);
+
+        $this->assertCount(20, $res);
     }
 
     public function testGetById()
@@ -169,5 +174,14 @@ class RepositoryTest extends TestCase
         $res = $this->repository->getAll(['filter' => 'aegon']);
 
         $this->assertCount(1, $res);
+    }
+
+    public function testWithDefaultScopes()
+    {
+        $repository = new PostRepositoryWithScope(new Post());
+
+        $res = $repository->getAll();
+
+        $this->assertCount(20, $res);
     }
 }

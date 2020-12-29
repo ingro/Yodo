@@ -10,7 +10,8 @@ class ControllerTest extends TestCase
         'title',
         'content',
         'comments_number',
-        'comments'
+        'comments',
+        'rating'
     ];
 
     public function testIndexRoute()
@@ -77,7 +78,7 @@ class ControllerTest extends TestCase
 
     public function testShowRoute()
     {
-        $response  = $this->json('GET', 'posts/37');
+        $response = $this->json('GET', 'posts/37');
 
         $response
             ->assertSuccessful()
@@ -86,6 +87,7 @@ class ControllerTest extends TestCase
         $json = $response->decodeResponseJson();
 
         $this->assertEquals(37, $json['id']);
+        $this->assertEquals(0, $json['rating']);
 
         $responseNotFound = $this->json('GET', 'posts/999');
 
